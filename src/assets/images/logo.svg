@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="136.001" height="28" viewBox="0 0 136.001 28">
+  <g id="YOLOH" transform="translate(17486.771 7728)">
+    <path id="O" d="M456.569,256.112a13.742,13.742,0,0,0-13.9,14v.076a13.867,13.867,0,1,0,27.734-.076v-.078A13.614,13.614,0,0,0,456.569,256.112Zm7.828,14.077c0,4.642-3.207,8.431-7.828,8.431s-7.9-3.867-7.9-8.506v-.078c0-4.642,3.207-8.43,7.828-8.43s7.9,3.867,7.9,8.509Z" transform="translate(-17849.502 -7984.112)"/>
+    <path id="O-2" data-name="O" d="M298.174,256.346a13.742,13.742,0,0,0-13.9,14v.075A13.867,13.867,0,1,0,312,270.347v-.079A13.614,13.614,0,0,0,298.174,256.346ZM306,270.423c0,4.642-3.207,8.43-7.828,8.43s-7.9-3.867-7.9-8.506v-.079c0-4.642,3.207-8.43,7.828-8.43s7.9,3.867,7.9,8.509Z" transform="translate(-17745.445 -7984.346)"/>
+    <g id="y" transform="translate(-17486.771 -7727.614)">
+      <path id="Path_30806" data-name="Path 30806" d="M216.373,257.7h-6.712l7.5,11.826,3.146-5.2Z" transform="translate(-209.661 -257.703)"/>
+      <path id="Path_30807" data-name="Path 30807" d="M249.693,257.7l-9.248,15.879v11.237h5.743V274.011L256.219,257.7Z" transform="translate(-230.415 -257.703)"/>
+    </g>
+    <g id="L" transform="translate(-17428.584 -7727.615)">
+      <path id="Path_30808" data-name="Path 30808" d="M385.678,257.7h-5.743v21.69l5.743-5.221Z" transform="translate(-379.935 -257.703)"/>
+      <path id="Path_30809" data-name="Path 30809" d="M379.935,327.01h19.177v-5.221H385.678Z" transform="translate(-379.935 -299.894)"/>
+    </g>
+    <g id="h" transform="translate(-17374.492 -7728)">
+      <path id="Path_33437" data-name="Path 33437" d="M2088.949,5667.68v3.434h5.986v-3.434Zm17.735-18.841v5.863h-11.749v-5.863h-5.986v16.278h5.986v-5.111h11.749v5.111h5.986v-16.278Zm0,18.841v3.434h5.986v-3.434Z" transform="translate(-2088.949 -5643.114)" fill="#fcbb18"/>
+      <rect id="Rectangle_5273" data-name="Rectangle 5273" width="5.986" height="27.999" transform="translate(0 0)" fill="#fcbb18"/>
+      <rect id="Rectangle_5274" data-name="Rectangle 5274" width="5.986" height="27.999" transform="translate(17.735 0)" fill="#fcbb18"/>
+    </g>
+  </g>
+</svg>

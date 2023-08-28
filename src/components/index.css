@@ -1,0 +1,456 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+  color: #000000;
+  font-weight: 500;
+}
+
+.logoMain {
+  cursor: pointer;
+}
+
+.mainHeader {
+  position: fixed;
+  top: 0;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  height: 80px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+
+/* .toolbar img {
+    margin: 0 16px;
+  } */
+
+.headerLink {
+  display: flex;
+  gap: 60px;
+  min-width: 55%;
+}
+
+.headerLink {
+  display: flex;
+}
+
+.headerLink a, .headerLink .link {
+  font-weight: 500;
+  font-size: 18px;
+}
+
+li {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: #000;
+}
+
+.headerLink {
+  margin-left: 80px;
+}
+
+.loginBtn {
+  margin-top: 10px;
+  margin-left: auto !important;
+  width: 125px;
+  height: 44px;
+  border-radius: 50px;
+  border: none;
+  color: #fff;
+  background-color: #000;
+  cursor: pointer;
+}
+.menuDropLinksMain {
+  transition: 0.5s;
+  cursor: pointer;
+}
+.menuDropLinksMain:hover {
+  color: #fcbb18;
+}
+.menuDrop {
+  display: flex;
+  gap: 10px;
+  cursor: pointer;
+  position: relative;
+}
+.menuDropMain {
+  position: relative;
+}
+.menuDropLinks {
+  position: absolute;
+  top: 50px;
+  border-top: 2px solid #fcbb18;
+  width: 210px;
+  background-color: #fff;
+  padding: 16px 10px;
+  display: flex;
+  box-shadow: 0px 3px 6px #00000029;
+  flex-direction: column;
+  gap: 35px;
+}
+.menuDropMain {
+  display: flex;
+}
+
+.userInfo {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.userImg {
+  border-radius: 100px;
+}
+
+.userInfo h4 {
+  margin: 0;
+  padding: 0;
+  font-weight: 500;
+}
+.mainSideBar {
+  min-width: 300px;
+  padding: 10px;
+}
+.mainSideBar li {
+  padding: 10px;
+}
+.mainSideBar .active {
+  position: relative;
+  background-color: #fff;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  width: 100%;
+  display: block;
+}
+.mainSideBar .active::before {
+  content: " ";
+  height: 100%;
+  width: 3px;
+  background-color: #fcbb18;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.sidebarToggal {
+  display: none !important;
+}
+.sidebarHeader h4 {
+  padding: 0;
+  margin: 0;
+}
+.sidebarHeader h4 span {
+  color: #fcbb18;
+}
+.sidebarHeader {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #e0dfdf;
+}
+
+.popupBg {
+  width: 900px;
+  height: 600px;
+  background-color: #fff;
+  border-radius: 10px;
+  margin: auto;
+  top: 50%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.logImgMain {
+  width: 50%;
+  height: 100%;
+  background-color: #fbfbfb;
+  position: relative;
+}
+.closeLoginModalButton {
+  position: absolute !important;
+  top: 10px;
+  right: 10px;
+}
+.popupContain {
+  z-index: 2;
+  position: relative;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 70px;
+  align-items: center;
+  justify-content: center;
+  padding-top: 80px;
+}
+.roundShap {
+  height: 450px;
+  width: 450px;
+  background-color: #fbf4e3;
+  border-radius: 100%;
+  position: absolute;
+  left: -70px;
+  top: -70px;
+  z-index: 0;
+}
+.formContainMain {
+  width: 50%;
+  padding: 45px;
+}
+.tabView .MuiBox-root {
+  margin-top: 50px;
+  padding: 0;
+}
+.error_block {
+  display: flex;
+  justify-content: center;
+  margin: 0px;
+  color: red;
+  font-weight: 600;
+}
+.otp-section .error_block {
+  margin-top: 20px;
+}
+.please_wait_block {
+  margin-top: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.otpButton, .otp-button {
+  cursor: pointer;
+}
+.otp-button {
+  margin-top: 30px;
+}
+.otp-button[disabled] {
+  margin-top: 30px;
+  background-color: grey;
+  cursor: not-allowed;
+}
+.otpButton[disabled] {
+  background-color: grey;
+  cursor: not-allowed;
+}
+.account-link {
+  cursor: pointer;
+  text-align: center;
+}
+.OtpFild {
+  border: 1px solid #b5b5b5;
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  text-align: center;
+}
+.OtpFildMain {
+  margin-top: 40px;
+}
+.resend {
+  color: #282828;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 30px !important;
+  margin-bottom: 20px !important;
+}
+.d-flex {
+  display: flex;
+}
+.gap-17 {
+  gap: 17px;
+}
+.stap {
+  height: 10px;
+  width: 10px;
+  background-color: #a3a3a3;
+  border-radius: 10px;
+}
+
+.stap-main {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.stap-active {
+  width: 20px;
+  background-color: #3a3a3a;
+}
+.userEdit {
+  position: relative;
+}
+.menu-img {
+  width: 35px;
+}
+.edit-pen {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 18px;
+  width: 18px;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  font-size: 10px;
+  border-radius: 100px;
+  border: 1px solid #000000;
+}
+
+/* loader css */
+.loaderArea {
+  background-color: #fcbb18;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  position: relative;
+}
+
+.loaderArea::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fcbb18;
+  animation: ripple 1s ease-in-out infinite forwards;
+  border-radius: 50%;
+}
+
+.loaderArea::after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fcbb18;
+  animation: ripple 1s 1.3s ease-in-out infinite forwards;
+  border-radius: 50%;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(6);
+    opacity: 0;
+  }
+}
+/*.loader {*/
+/*  height: 20vh;*/
+/*  width: 20vh;*/
+/*  max-height: 480px;*/
+/*  min-width: 480px;*/
+/*}*/
+.loaderBg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.73);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+/*.loaderTransform {*/
+/*  opacity: 0.8;*/
+/*}*/
+/* End loader css */
+@media only screen and (max-width: 1200px) {
+}
+@media only screen and (max-width: 992px) {
+  .headerLink {
+    display: none;
+  }
+  .sidebarToggal {
+    display: flex !important;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    min-width: unset !important;
+    color: #000 !important;
+  }
+  .loginBtnHeader {
+    display: none;
+  }
+  .toolbar {
+    justify-content: space-between;
+  }
+  .userInfo h4 {
+    display: none;
+  }
+  .userImg {
+    height: 30px;
+    width: 30px;
+  }
+  .logoMain {
+    width: 90px;
+  }
+  .mainHeader {
+    height: 60px;
+  }
+  .popupBg {
+    width: 700px;
+  }
+  .formContainMain {
+    padding: 20px;
+  }
+  .roundShap {
+    height: 300px;
+    width: 300px;
+  }
+}
+@media only screen and (max-width: 768px) {
+  .logImgMain {
+    display: none;
+  }
+  .popupBg {
+    width: fit-content;
+  }
+  .formContainMain {
+    min-width: 350px;
+    padding: 10px;
+  }
+  .popupBg {
+    height: auto;
+  }
+  .OtpFild {
+    width: 40px;
+    height: 40px;
+  }
+  .otpVerification {
+    min-width: unset;
+    width: 100%;
+  }
+}
+@media only screen and (max-width: 600px) {
+}
+@media only screen and (max-width: 375px) {
+  .formContainMain {
+    width: 270px;
+    padding: 10px;
+    min-width: unset;
+  }
+  .resend {
+    margin-top: 40px !important;
+  }
+  .OtpFild {
+    width: 30px;
+    height: 30px;
+  }
+}
