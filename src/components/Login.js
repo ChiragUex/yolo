@@ -137,7 +137,7 @@ const Login = ({ setLoginModal }) => {
   }, [seconds]);
 
 
-
+  console.log("showKey :")
 
 
   const checkAgentStatus = () => {
@@ -162,6 +162,7 @@ const Login = ({ setLoginModal }) => {
     const insuranceTypePayload = getInsuranceTypePayloadTemplate();
     getInsuranceTypeApi(insuranceTypePayload).then((response) => {
       // console.log("getInsuranceTypeApi response authcontext : ", response);
+      console.log(response);
 
     }).catch((error) => {
       console.log("error : ", error);
