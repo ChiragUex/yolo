@@ -29,7 +29,7 @@ const DrawerIndex = ({ children }) => {
 
   const agentProfileDetails = JSON.parse(localStorage.getItem('agentProfileDetails'));
 
-  const rejected = agentProfileDetails?.agentLicense?.find(item => item.license_verification_status == "reject")
+  const rejected = agentProfileDetails?.agentLicense?.find(item => item.license_verification_status == "reject") || agentProfileDetails?.agentLicense?.find(item => item.license_verification_status == "pending")
 
   
 
@@ -39,7 +39,7 @@ const DrawerIndex = ({ children }) => {
         <section className="main-dashboard">
           <div className="side-bar">
             <div className="side-bar-top">
-              <NavLink  to={location?.pathname == '/warning/rejected' ? "#" : rejected && location?.pathname == '/update-details' ? "#" : "/dashboard"} className="side-bar-link">
+              <NavLink to={location?.pathname == '/warning/rejected' ? "#" : rejected && location?.pathname == '/update-details' ? "#" : "/dashboard"} className="side-bar-link">
                 <img src={dashboard} alt="img" />
                 <div>Dashboard</div>
               </NavLink>

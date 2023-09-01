@@ -242,16 +242,16 @@ const UpdateDetails = () => {
             console.log("getAgentProfileDetailsPayloadTemplate response : ", response);
             setItem('agentProfileDetails', JSON.stringify(response));
             setItem('agentProfileData', JSON.stringify(response?.profile));
-            if (response?.profile?.agent_verification_status == "pending" || response?.agentLicense?.find(item => item.license_verification_status == "pending")) {
+            if (response?.profile?.agent_verification_status == "pending") {
                 navigate('/warning/notapproved')
                 return;
             }
-            else if (response?.agentLicense?.find(item => item.license_verification_status == "reject")) {
+            else if(response?.agentLicense?.find(item => item.license_verification_status == "reject" || response?.agentLicense?.find(item => item.license_verification_status == "pending"))){
                 navigate('/warning/rejected')
                 return;
             }
             else {
-                navigate('/dashboard')
+                navigate('/update-details')
                 return;
             }
         })
@@ -264,12 +264,13 @@ const UpdateDetails = () => {
 
     const handleUpdateProfilePicture = async (data) => {
 
-        // console.log("console handleSubmit(handleUpdateProfilePicture)() : ", data);
-        if (data?.profile_picture instanceof File) {
+         console.log("clicked handleSubmit(handleUpdateProfilePicture)() : ", watch("profile_picture"));
+        
+         if (data?.profile_picture instanceof File || watch("profile_picture") instanceof File) {
             setIsLoader(true)
-            const profilepic = data?.profile_picture instanceof File ? await Base64Converter(data?.profile_picture) : [];
+            const profilepic = data?.profile_picture instanceof File || watch("profile_picture") instanceof File ? await Base64Converter(data?.profile_picture ? data?.profile_picture : watch("profile_picture")) : [];
             const profilePicturePayload = updateProfilePicturePayloadTemplate(profilepic);
-            // console.log("profilePicturePayload : ", profilePicturePayload);
+            console.log("profilePicturePayload : ", profilePicturePayload);
             updateProfilePictureApi(profilePicturePayload).then((response) => {
                 setIsLoader(false)
                 console.log("updateProfilePictureApi response : ", response)
@@ -287,8 +288,13 @@ const UpdateDetails = () => {
         }
     }
 
-    console.log("formState : ", formState?.isDirty, formState?.dirtyFields, Object.keys(formState.dirtyFields).length);
+    useEffect(() => {
+        if(watch("profile_picture") instanceof File){
+            handleUpdateProfilePicture(watch("profile_picture"))
+        }
+    },[watch("profile_picture")])
 
+  
     const handleUpdatePersonalDetails = async (data) => {
 
         setIsLoader(true)
@@ -341,7 +347,7 @@ const UpdateDetails = () => {
 
     const handleAddLicenseDetails = async (data, accordionIndex) => {
 
-        console.log("handleAddLicenseDetails : inside",data, accordionIndex);
+        console.log("handleAddLicenseDetails : inside", data, accordionIndex);
 
         setIsLoader(true);
 
@@ -362,12 +368,12 @@ const UpdateDetails = () => {
             })) || []
         };
 
-        
+
         const newAgentLicenseDetails = {
             agent_license: agentLicenseDetails?.agent_license
         }
 
-        console.log("newAgentLicenseDetails : ",newAgentLicenseDetails, agentLicenseDetails?.agent_license);
+        console.log("newAgentLicenseDetails : ", newAgentLicenseDetails, agentLicenseDetails?.agent_license);
 
         const licenseProfileUpdateDetailsPayload = updateAgentProfileLicenseDetailsPayloadTemplate(newAgentLicenseDetails);
         console.log("abc licenseProfileUpdateDetailsPayload   : ", licenseProfileUpdateDetailsPayload);
@@ -390,7 +396,7 @@ const UpdateDetails = () => {
 
     const handleUpdateLicenseDetails = async (data, accordionIndex) => {
 
-        console.log("handleUpdateLicenseDetails : inside",data, accordionIndex);
+        console.log("handleUpdateLicenseDetails : inside", data, accordionIndex);
 
         setIsLoader(true);
 
@@ -441,52 +447,50 @@ const UpdateDetails = () => {
         setIsLoader(false);
     }
 
-    console.log("image value : ", watch(`agent_license[${1}].documents_loc`));
-
     const handleAddAffiliation = async (data, accordionIndex) => {
 
-          console.log(" handleAddAffiliation : ", data, accordionIndex);
+        console.log(" handleAddAffiliation : ", data, accordionIndex);
 
-          setIsLoader(true);
+        setIsLoader(true);
 
         //   const agent_affiliation_sequenceIds = agentProfileDetails?.agentAffiliation?.map((data) => data?.sequence_id) || [];
-  
-          const affiliationProfileUpdateDetails = {
-              agent_affiliation: await Promise.all(data?.new_agent_affiliation?.map(async (data, index) => {
-                  return {
-                      insurance_carrier: data?.insurance_carrier,
-                      insurance_type: "",
-                      working_since: data?.working_since,
-                      sequence_id: 0,
-                      documents_loc: data?.documents_loc instanceof File ? [await Base64Converter(data?.documents_loc)] : [],
-                      cognito_user_id: localStorage.getItem('authCognitoId'),
-                  }
-              })) || []
-          };
-  
-          const newAffiliationProfileUpdateDetails = {
-              agent_affiliation: affiliationProfileUpdateDetails?.agent_affiliation
-          }
-  
-          // console.log("alldata : ", affiliationProfileUpdateDetails, newAffiliationProfileUpdateDetails);
-  
-          const affiliationProfileUpdateDetailsPayload = updateAgentProfileAffiliationDetailsPayloadTemplate(newAffiliationProfileUpdateDetails);
-         
-          updateAffiliationProfileDetailsApi(affiliationProfileUpdateDetailsPayload).then((response) => {
-                  setIsLoader(false)
-                  console.log("updateAffiliationProfileDetailsApi response : ", response)
-                  getProfileDetailsApis();
-                  enqueueSnackbar(response?.message, {
-                      variant: 'success'
-                  })
-              }).catch((error) => {
-                  setIsLoader(false)
-                  console.log("error : ", error)
-                  enqueueSnackbar(error?.message, {
-                      variant: 'warning'
-                  })
-              })
-      }
+
+        const affiliationProfileUpdateDetails = {
+            agent_affiliation: await Promise.all(data?.new_agent_affiliation?.map(async (data, index) => {
+                return {
+                    insurance_carrier: data?.insurance_carrier,
+                    insurance_type: "",
+                    working_since: data?.working_since,
+                    sequence_id: 0,
+                    documents_loc: data?.documents_loc instanceof File ? [await Base64Converter(data?.documents_loc)] : [],
+                    cognito_user_id: localStorage.getItem('authCognitoId'),
+                }
+            })) || []
+        };
+
+        const newAffiliationProfileUpdateDetails = {
+            agent_affiliation: affiliationProfileUpdateDetails?.agent_affiliation
+        }
+
+        // console.log("alldata : ", affiliationProfileUpdateDetails, newAffiliationProfileUpdateDetails);
+
+        const affiliationProfileUpdateDetailsPayload = updateAgentProfileAffiliationDetailsPayloadTemplate(newAffiliationProfileUpdateDetails);
+
+        updateAffiliationProfileDetailsApi(affiliationProfileUpdateDetailsPayload).then((response) => {
+            setIsLoader(false)
+            console.log("updateAffiliationProfileDetailsApi response : ", response)
+            getProfileDetailsApis();
+            enqueueSnackbar(response?.message, {
+                variant: 'success'
+            })
+        }).catch((error) => {
+            setIsLoader(false)
+            console.log("error : ", error)
+            enqueueSnackbar(error?.message, {
+                variant: 'warning'
+            })
+        })
+    }
 
 
     const handleUpdateAffiliationUpdate = async (data, accordionIndex) => {
@@ -539,9 +543,8 @@ const UpdateDetails = () => {
         }
     }
 
-   
 
-    console.log("watch('agent_affiliation') : ", watch('agent_affiliations'));
+    console.log("agentProfileDetails : ",agentProfileDetails,watch('agent_affiliations'));
 
     return (
         <>
@@ -577,7 +580,7 @@ const UpdateDetails = () => {
                                     </Grid>
                                 </Grid>
 
-                                <Grid item md={12} mb={5}>
+                                {/* <Grid item md={12} mb={5}>
                                     <form onSubmit={handleSubmit(handleUpdateProfilePicture)}>
                                         <LeadDetailsAccordion title={"Profile Picture"} expanded={false} editIcon={disableProfilePicture ? "editProfilePicture" : "saveProfilePicture"} handleEditIconClick={handleEditIconClick} handleSaveIconClick={handleSaveIconClick} handleUpdateProfilePicture={handleUpdateProfilePicture} expandUpdateDetailsAccordion={!disableProfilePicture}>
                                             <Grid
@@ -592,104 +595,95 @@ const UpdateDetails = () => {
                                             </Grid>
                                         </LeadDetailsAccordion>
                                     </form>
-                                </Grid>
+                                </Grid> */}
 
-                                
+
                                 <Grid item md={12}>
                                     <form onSubmit={handleSubmit(handleUpdatePersonalDetails)}>
-                                 <LeadDetailsAccordion title={"Personal Details"} expanded={true} editIcon={disablePersonalDetails ? "editPeronalDetails" : "savePeronalDetails"} handleEditIconClick={handleEditIconClick} handleSaveIconClick={handleSaveIconClick} handleUpdateDetails={handleUpdatePersonalDetails} expandUpdateDetailsAccordion={!disablePersonalDetails} getValues={getValues} handleSubmit={handleSubmit} trigger={trigger}>
-                                 <Grid 
-                                 container
-                                 direction="row"
-                                 >           
-                                {/* <Grid item md={2}>
-                                <ImageUploadComponent control={control} defaultFile={watch("profile_picture") ? watch("profile_picture") : agentProfileDetails?.profile?.profile_picture} setValue={setValue} name={"profile_picture"} uploadBtnDiv={"personalDetailsUpdateUploadBtnDiv"} note={' Note : ( Upload profile picture. )'} disabled={disableProfilePicture} page={"new"} />
-                                <EditIcon /> Edit
-                                </Grid> */}
-                                <Grid item md={12}>
+                                        <LeadDetailsAccordion title={"Personal Details"} expanded={true} editIcon={disablePersonalDetails ? "editPeronalDetails" : "savePeronalDetails"} handleEditIconClick={handleEditIconClick} handleSaveIconClick={handleSaveIconClick} handleUpdateDetails={handleUpdatePersonalDetails} expandUpdateDetailsAccordion={!disablePersonalDetails} getValues={getValues} handleSubmit={handleSubmit} trigger={trigger}>
                                             <Grid
                                                 container
                                                 direction="row"
-                                                justifyContent="start"
-                                                alignItems="center"
-                                                spacing={5}
                                             >
-                                                <Grid item md={6}>
-                                                    <InputFieldController
-                                                        control={control}
-                                                        fullWidth
-                                                        name="first_name"
-                                                        label="First Name*"
-                                                        placeholder="Enter First Name"
-                                                        variant="standard"
-                                                        disabled={disablePersonalDetails}
-                                                    />
+                                                <Grid item md={2}>
+                                                    <ImageUploadComponent control={control} defaultFile={watch("profile_picture") ? watch("profile_picture") : agentProfileDetails?.profile?.profile_picture} setValue={setValue} name={"profile_picture"} uploadBtnDiv={"personalDetailsUpdateUploadBtnDiv"} note={' Note : ( Upload profile picture. )'} page={"profilePicture"} />
                                                 </Grid>
-                                                <Grid item md={6}>
-                                                    <InputFieldController
-                                                        control={control}
-                                                        fullWidth
-                                                        name="last_name"
-                                                        label="Last Name*"
-                                                        placeholder="Enter Last Name"
-                                                        variant="standard"
-                                                        disabled={disablePersonalDetails}
-                                                    />
-                                                </Grid>
-
-                                                <Grid item md={6}>
-                                                    {/* <InputFieldController
-                                                    control={control}
-                                                    fullWidth
-                                                    name="businessPhoneMobile"
-                                                    label="Business Phone Mobile"
-                                                    placeholder="Enter Business Phone Mobile"
-                                                    variant="standard"
-                                                    disabled={disablePersonalDetails}
-                                                /> */}
-                                                    <Controller
-                                                        name="businessPhoneMobile"
-                                                        control={control}
-                                                        rules={{
-                                                            required: "Phone is required!",
-                                                            validate: (value) =>
-                                                                handleMobileValidate(value)
-                                                                    ? null
-                                                                    : "Phone number must starts with +1 or +91 followed by 10 digit number only!",
-                                                        }}
-                                                        render={({
-                                                            field: { onChange, value },
-                                                            fieldState: { error },
-                                                        }) => (
-                                                            <TextField
-                                                                id="businessPhoneMobile"
-                                                                name="businessPhoneMobile"
-                                                                label="Business Phone Mobile"
-                                                                variant="standard"
-                                                                margin="normal"
-                                                                color="secondary"
-                                                                type="text"
-                                                                disabled={disablePersonalDetails}
-                                                                value={value}
-                                                                error={!!error}
-                                                                placeholder="Enter Business Phone Mobile"
-                                                                onChange={(event) => {
-                                                                    const newValue = event.target.value;
-                                                                    if (/^[0-9\+]*$/.test(newValue) && newValue?.length < 14) {
-                                                                        onChange(event);
-                                                                    }
-                                                                }}
+                                                <Grid item md={10}>
+                                                    <Grid
+                                                        container
+                                                        direction="row"
+                                                        justifyContent="start"
+                                                        alignItems="center"
+                                                        spacing={5}
+                                                    >
+                                                        <Grid item md={6}>
+                                                            <InputFieldController
+                                                                control={control}
                                                                 fullWidth
-                                                                InputLabelProps={{
-                                                                    classes: { focused: "hello-world", root: "world" },
-                                                                }}
-                                                                helperText={error ? error.message : null}
+                                                                name="first_name"
+                                                                label="First Name*"
+                                                                placeholder="Enter First Name"
+                                                                variant="standard"
+                                                                disabled={disablePersonalDetails}
                                                             />
-                                                        )}
-                                                    />
-                                                </Grid>
-                                                <Grid item md={6}>
-                                                    {/* <InputFieldController
+                                                        </Grid>
+                                                        <Grid item md={6}>
+                                                            <InputFieldController
+                                                                control={control}
+                                                                fullWidth
+                                                                name="last_name"
+                                                                label="Last Name*"
+                                                                placeholder="Enter Last Name"
+                                                                variant="standard"
+                                                                disabled={disablePersonalDetails}
+                                                            />
+                                                        </Grid>
+
+                                                        <Grid item md={6}>
+                                                        
+                                                            <Controller
+                                                                name="businessPhoneMobile"
+                                                                control={control}
+                                                                rules={{
+                                                                    required: "Phone is required!",
+                                                                    validate: (value) =>
+                                                                        handleMobileValidate(value)
+                                                                            ? null
+                                                                            : "Phone number must starts with +1 or +91 followed by 10 digit number only!",
+                                                                }}
+                                                                render={({
+                                                                    field: { onChange, value },
+                                                                    fieldState: { error },
+                                                                }) => (
+                                                                    <TextField
+                                                                        id="businessPhoneMobile"
+                                                                        name="businessPhoneMobile"
+                                                                        label="Business Phone Mobile"
+                                                                        variant="standard"
+                                                                        margin="normal"
+                                                                        color="secondary"
+                                                                        type="text"
+                                                                        disabled={disablePersonalDetails}
+                                                                        value={value}
+                                                                        error={!!error}
+                                                                        placeholder="Enter Business Phone Mobile"
+                                                                        onChange={(event) => {
+                                                                            const newValue = event.target.value;
+                                                                            if (/^[0-9\+]*$/.test(newValue) && newValue?.length < 14) {
+                                                                                onChange(event);
+                                                                            }
+                                                                        }}
+                                                                        fullWidth
+                                                                        InputLabelProps={{
+                                                                            classes: { focused: "hello-world", root: "world" },
+                                                                        }}
+                                                                        helperText={error ? error.message : null}
+                                                                    />
+                                                                )}
+                                                            />
+                                                        </Grid>
+                                                        <Grid item md={6}>
+                                                            {/* <InputFieldController
                                                     control={control}
                                                     fullWidth
                                                     name="personalPhoneLandline"
@@ -699,106 +693,105 @@ const UpdateDetails = () => {
                                                     disabled={disablePersonalDetails}
                                                 /> */}
 
-                                                    <Controller
-                                                        name="personalPhoneLandline"
-                                                        control={control}
-                                                        rules={{
-                                                            required: "Phone is required!",
-                                                            validate: (value) =>
-                                                                handleMobileValidate(value)
-                                                                    ? null
-                                                                    : "Phone number must starts with +1 or +91 followed by 10 digit number only!",
-                                                        }}
-                                                        render={({
-                                                            field: { onChange, value },
-                                                            fieldState: { error },
-                                                        }) => (
-                                                            <TextField
-                                                                id="businessPhoneMobile"
+                                                            <Controller
                                                                 name="personalPhoneLandline"
-                                                                label="Personal Phone Landline"
-                                                                placeholder="Enter Personal Phone Landline"
+                                                                control={control}
+                                                                rules={{
+                                                                    required: "Phone is required!",
+                                                                    validate: (value) =>
+                                                                        handleMobileValidate(value)
+                                                                            ? null
+                                                                            : "Phone number must starts with +1 or +91 followed by 10 digit number only!",
+                                                                }}
+                                                                render={({
+                                                                    field: { onChange, value },
+                                                                    fieldState: { error },
+                                                                }) => (
+                                                                    <TextField
+                                                                        id="businessPhoneMobile"
+                                                                        name="personalPhoneLandline"
+                                                                        label="Personal Phone Landline"
+                                                                        placeholder="Enter Personal Phone Landline"
+                                                                        variant="standard"
+                                                                        disabled={disablePersonalDetails}
+                                                                        margin="normal"
+                                                                        color="secondary"
+                                                                        type="text"
+                                                                        value={value}
+                                                                        error={!!error}
+                                                                        onChange={(event) => {
+                                                                            const newValue = event.target.value;
+                                                                            if (/^[0-9\+]*$/.test(newValue) && newValue?.length < 14) {
+                                                                                onChange(event);
+                                                                            }
+                                                                        }}
+                                                                        fullWidth
+                                                                        InputLabelProps={{
+                                                                            classes: { focused: "hello-world", root: "world" },
+                                                                        }}
+                                                                        helperText={error ? error.message : null}
+                                                                    />
+                                                                )}
+                                                            />
+                                                        </Grid>
+
+                                                        <Grid item md={6}>
+                                                            <InputFieldController
+                                                                control={control}
+                                                                fullWidth
+                                                                name="personalDetailEmail"
+                                                                label="Email ID*"
+                                                                placeholder="Enter Email ID"
+                                                                variant="standard"
+                                                                disabled={true}
+                                                            />
+                                                        </Grid>
+                                                        <Grid item md={6}>
+                                                            <InputFieldController
+                                                                control={control}
+                                                                fullWidth
+                                                                name="contactAddress"
+                                                                label="Contact Address"
+                                                                placeholder="Enter Contact Address"
                                                                 variant="standard"
                                                                 disabled={disablePersonalDetails}
-                                                                margin="normal"
-                                                                color="secondary"
-                                                                type="text"
-                                                                value={value}
-                                                                error={!!error}
-                                                                onChange={(event) => {
-                                                                    const newValue = event.target.value;
-                                                                    if (/^[0-9\+]*$/.test(newValue) && newValue?.length < 14) {
-                                                                        onChange(event);
-                                                                    }
-                                                                }}
-                                                                fullWidth
-                                                                InputLabelProps={{
-                                                                    classes: { focused: "hello-world", root: "world" },
-                                                                }}
-                                                                helperText={error ? error.message : null}
                                                             />
-                                                        )}
-                                                    />
-                                                </Grid>
+                                                        </Grid>
 
-                                                <Grid item md={6}>
-                                                    <InputFieldController
-                                                        control={control}
-                                                        fullWidth
-                                                        name="personalDetailEmail"
-                                                        label="Email ID*"
-                                                        placeholder="Enter Email ID"
-                                                        variant="standard"
-                                                        disabled={true}
-                                                    />
+                                                        <Grid item md={12}>
+                                                            <h3>Documents</h3>
+                                                            <ImageUploadComponent control={control} defaultFile={watch("personalDetailDocument") ? watch("personalDetailDocument") : agentProfileDetails?.profile?.documents_loc[0]} setValue={setValue} name={"personalDetailDocument"} uploadBtnDiv={"personalDetailsUpdateUploadBtnDiv"} note={' Note : ( upload documents such as latest commission statements, or acknowledgments, or proof of latest policy sales, etc.)'} disabled={disablePersonalDetails} page={"new"} />
+                                                        </Grid>
+                                                    </Grid>
                                                 </Grid>
-                                                <Grid item md={6}>
-                                                    <InputFieldController
-                                                        control={control}
-                                                        fullWidth
-                                                        name="contactAddress"
-                                                        label="Contact Address"
-                                                        placeholder="Enter Contact Address"
-                                                        variant="standard"
-                                                        disabled={disablePersonalDetails}
-                                                    />
-                                                </Grid>
-
-                                                <Grid item md={12}>
-                                                    <h3>Documents</h3>
-                                                    <ImageUploadComponent control={control} defaultFile={watch("personalDetailDocument") ? watch("personalDetailDocument") : agentProfileDetails?.profile?.documents_loc[0]} setValue={setValue} name={"personalDetailDocument"} uploadBtnDiv={"personalDetailsUpdateUploadBtnDiv"} note={' Note : ( upload documents such as latest commission statements, or acknowledgments, or proof of latest policy sales, etc. )'} disabled={disablePersonalDetails} page={"updateProfile"} />
-                                                </Grid>
-                                            </Grid>
-                                            </Grid>
                                             </Grid>
                                         </LeadDetailsAccordion>
                                     </form>
                                 </Grid>
 
-
                                 <Grid item md={12}>
-                                <Grid
-                                    container
-                                    direction="row"
-                                    justifyContent="space-between"
-                                    alignItems="center"
-                                    alignContent={"center"}
-                                    spacing={3}
-                                >
-                                     <Grid item>
-                                    <h3>State Licenses & Product Offering</h3>
-                                    </Grid>
-                                    <Grid item>
-                                    <Button onClick={() => appendLicenses({
-                                        state_licensed: '',
-                                        insurance_type_supported: '',
-                                        issue_date: '',
-                                        expiration_date: '',
-                                        documents_loc: '',
-                                        license_identifier: '',
-                                        cognito_user_id: localStorage.getItem('authCognitoId'),
-                                    })}><Add /> Add</Button>
-                                    </Grid>
+                                    <Grid
+                                        container
+                                        direction="row"
+                                        justifyContent="space-between"
+                                        alignItems="center"
+                                        alignContent={"center"}
+                                        spacing={3}
+                                    >
+                                        <Grid item>
+                                            <h3>State Licenses & Product Offering</h3>
+                                        </Grid>
+                                        <Grid item>
+                                            <Button onClick={() => appendLicenses({
+                                                state_licensed: '',
+                                                insurance_type_supported: '',
+                                                issue_date: '',
+                                                expiration_date: '',
+                                                documents_loc: '',
+                                                license_identifier: '',
+                                                cognito_user_id: localStorage.getItem('authCognitoId'),
+                                            })}><Add /> Add</Button>
+                                        </Grid>
                                     </Grid>
                                     <form onSubmit={handleSubmit(handleUpdateLicenseDetails)}>
                                         {
@@ -922,7 +915,7 @@ const UpdateDetails = () => {
                                                                 </Grid>
                                                                 <Grid item md={12}>
                                                                     <h3>Documents</h3>
-                                                                    <ImageUploadComponent control={control} setValue={setValue} name={`agent_license[${index}].documents_loc`} defaultFile={watch(`agent_license[${index}].documents_loc`) ? watch(`agent_license[${index}].documents_loc`) : data?.documents_loc[0]} note={'Note:(Driving license or a passport)'} status={data.license_verification_status == "reject" ? "rejected" : "accepted"} disabled={disableLicenceDetails[index]} page={"updateProfile"} />
+                                                                    <ImageUploadComponent control={control} setValue={setValue} name={`agent_license[${index}].documents_loc`} defaultFile={watch(`agent_license[${index}].documents_loc`) ? watch(`agent_license[${index}].documents_loc`) : data?.documents_loc[0]} note={'Note:(Driving license or a passport)'} status={data.license_verification_status == "reject" ? "rejected" : "accepted"} disabled={disableLicenceDetails[index]} page={"new"} />
                                                                 </Grid>
                                                             </Grid>
                                                         </LeadDetailsAccordion>
@@ -930,10 +923,10 @@ const UpdateDetails = () => {
                                                 )
                                             })
                                         }
-
                                     </form>
+
                                     <form onSubmit={handleSubmit(handleAddLicenseDetails)}>
-                                    {licensesFields.map((accordion, index) => (
+                                        {licensesFields.map((accordion, index) => (
                                             <Accordion key={accordion.id} className='accordion' >
                                                 <AccordionSummary
                                                     expandIcon={<ExpandMore />}
@@ -1084,6 +1077,7 @@ const UpdateDetails = () => {
                                                         //   setLicenseImage={setLicenseImage}
                                                         note={'Note:(Driving license or a passport)'}
                                                         defaultFile={watch(`new_agent_license[${index}].documents_loc`)}
+                                                        page={"new"}
                                                     />
                                                 </AccordionDetails>
                                             </Accordion>
@@ -1092,27 +1086,27 @@ const UpdateDetails = () => {
                                 </Grid>
 
                                 <Grid item md={12}>
-                                <Grid
-                                    container
-                                    direction="row"
-                                    justifyContent="space-between"
-                                    alignItems="center"
-                                    alignContent={"center"}
-                                    spacing={3}
-                                >
-                                     <Grid item>
-                                    <h3>Affiliation Details</h3>
-                                    </Grid>
-                                    <Grid item>
-                                    <Button onClick={() => {
-                                        appendAffiliations({
-                                            insurance_carrier: '',
-                                            documents_loc: '',
-                                            working_since: '',
-                                            cognito_user_id: localStorage.getItem('authCognitoId'),
-                                        })
-                                    }}><Add /> Add</Button>
-                                    </Grid>
+                                    <Grid
+                                        container
+                                        direction="row"
+                                        justifyContent="space-between"
+                                        alignItems="center"
+                                        alignContent={"center"}
+                                        spacing={3}
+                                    >
+                                        <Grid item>
+                                            <h3>Affiliation Details</h3>
+                                        </Grid>
+                                        <Grid item>
+                                            <Button onClick={() => {
+                                                appendAffiliations({
+                                                    insurance_carrier: '',
+                                                    documents_loc: '',
+                                                    working_since: '',
+                                                    cognito_user_id: localStorage.getItem('authCognitoId'),
+                                                })
+                                            }}><Add /> Add</Button>
+                                        </Grid>
                                     </Grid>
                                     <form onSubmit={handleSubmit(handleUpdateAffiliationUpdate)}>
                                         {
@@ -1168,7 +1162,7 @@ const UpdateDetails = () => {
 
                                                                 <Grid item md={12}>
                                                                     <h3>Documents</h3>
-                                                                    <ImageUploadComponent control={control} name={`agent_affiliation[${index}].documents_loc`} defaultFile={watch(`agent_affiliation[${index}].documents_loc`) ? watch(`agent_affiliation[${index}].documents_loc`) : data?.documents_loc[0]} setValue={setValue} note={'Note:(Driving license or a passport)'} disabled={disableAffiliationDetails[index]} page={"updateProfile"} />
+                                                                    <ImageUploadComponent control={control} name={`agent_affiliation[${index}].documents_loc`} defaultFile={watch(`agent_affiliation[${index}].documents_loc`) ? watch(`agent_affiliation[${index}].documents_loc`) : data?.documents_loc[0]} setValue={setValue} note={'Note:(Driving license or a passport)'} disabled={disableAffiliationDetails[index]} page={"new"} />
                                                                 </Grid>
                                                             </Grid>
                                                         </LeadDetailsAccordion>
@@ -1176,9 +1170,9 @@ const UpdateDetails = () => {
                                                 )
                                             })}
 
-                                            </form>
+                                    </form>
 
-                                        <form onSubmit={handleSubmit(handleAddAffiliation)}>
+                                    <form onSubmit={handleSubmit(handleAddAffiliation)}>
                                         {affiliationsFields.map((_, index) => (
                                             <Accordion key={index} className='accordion'>
                                                 <AccordionSummary
@@ -1230,6 +1224,7 @@ const UpdateDetails = () => {
                                                         setValue={setValue}
                                                         note={'Note:(Driving license or a passport)'}
                                                         defaultFile={watch(`new_agent_affiliation[${index}].documents_loc`)}
+                                                        page={"new"}
                                                     />
 
                                                 </AccordionDetails>

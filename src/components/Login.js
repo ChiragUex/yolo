@@ -50,7 +50,7 @@ const Login = ({ setLoginModal }) => {
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [termAndCondition, setTermsAndCondition] = useState(false);
-
+  
   function TabPanel(props) {
     const { children, value, index, ...other } = props;
     return (
@@ -71,8 +71,8 @@ const Login = ({ setLoginModal }) => {
     );
   }
 
-
-
+ 
+  
   const [value, setValue] = React.useState(0);
   const { handleSubmit, trigger, reset, control } = useForm();
 
@@ -137,20 +137,38 @@ const Login = ({ setLoginModal }) => {
   }, [seconds]);
 
 
-  console.log("showKey :")
+//   const vdata = getItem("authUserValidated")
+ 
+
+// console.log("local : ",vdata);
 
 
-  const checkAgentStatus = () => {
-    const payload = getAgentProfileDetailsPayloadTemplate();
+
+// useEffect(() => {
+//   if (getItem("authUserValidated") === "true") {
+//     console.log("localstorage : true",getItem("authUserValidated")); 
+//   }
+//   else{
+//     console.log("localstorage : false");
+//   }
+//   // else if (location && location.search && location.search.replace("?", "") === 'login') {
+//   //   setLoginModal(true)
+//   // }
+// }, []);
+
+
+const checkAgentStatus = () => {
+  const payload = getAgentProfileDetailsPayloadTemplate();
     getAgentProfileApi(payload).then((response) => {
       console.log("getAgentProfileDetailsPayloadTemplate response authcontext : ", response);
       setItem('agentProfileData', JSON.stringify(response?.profile));
-      setItem('agentProfileDetails', JSON.stringify(response));
-      if (response?.profile?.agent_verification_status == "pending" || response?.agentLicense?.find(item => item.license_verification_status == "pending")) {
+      setItem('agentProfileDetails',JSON.stringify(response));
+      // console.log("testtttt : ",response?.agentLicense?.find(item => item.license_verification_status == "reject"));
+      if(response?.profile?.agent_verification_status == "pending" ){
         navigate('/warning/notapproved')
         return;
       }
-      else if (response?.agentLicense?.find(item => item.license_verification_status == "reject")) {
+      else if(response?.agentLicense?.find(item => item.license_verification_status == "reject" || response?.agentLicense?.find(item => item.license_verification_status == "pending"))){
         navigate('/warning/rejected')
         return;
       }
@@ -159,15 +177,24 @@ const Login = ({ setLoginModal }) => {
         console.log("error : ", error);
       })
 
-    const insuranceTypePayload = getInsuranceTypePayloadTemplate();
-    getInsuranceTypeApi(insuranceTypePayload).then((response) => {
-      // console.log("getInsuranceTypeApi response authcontext : ", response);
-      console.log(response);
+      const insuranceTypePayload = getInsuranceTypePayloadTemplate();
+      getInsuranceTypeApi(insuranceTypePayload).then((response) => {
+        console.log("getInsuranceTypeApi response authcontext : ", response);
+       
+      }).catch((error) => {
+        console.log("error : ", error);
+      })
+} 
 
-    }).catch((error) => {
-      console.log("error : ", error);
-    })
-  }
+
+// useEffect(() => {
+//   const regex = /^(\+1|\+91)\d{10}$/;
+//                     if (!regex.test(username)) {
+//                       enqueueSnackbar("Invalid Phone Number format. It must start with +1 or +91 followed by 10 digits.", {
+//                         variant: 'error'
+//                       })
+//   }
+// },[username])
 
 
   return (
@@ -416,7 +443,7 @@ const Login = ({ setLoginModal }) => {
                               setSeconds(30);
                               cognitoSignIn(username)
                                 .then((res) => {
-
+                                  
                                   setCognitoUser(res)
                                 })
                                 .finally(() => {
@@ -439,12 +466,12 @@ const Login = ({ setLoginModal }) => {
                       setRequestInProgress(true);
                       cognitoConfirmSignIn(cognitoUser, otp)
                         .then(async (user) => {
-
+                         
                           setSeconds(0);
                           setRequestInProgress(true);
                           if (user.attributes && user.attributes.phone_number) {
-                            if (registerFlowStarted) {
-                              setOtp("");
+                           if (registerFlowStarted) {
+                             setOtp("");
                               setSeconds(30);
                               setShowKey("EMAILOTP");
                               cognitoUpdateUserAttributes(cognitoUser, {
@@ -464,8 +491,8 @@ const Login = ({ setLoginModal }) => {
                                 await login(user);
 
                                 checkAgentStatus();
-
-                                if (
+                                
+                               if (
                                   localStorage.getItem("authUserValidated") == "false"
                                 ) {
                                   enqueueSnackbar("Please Complete Profile.", {
@@ -475,10 +502,10 @@ const Login = ({ setLoginModal }) => {
                                     pathname: '/create-account',
                                     search: `?cognitoId=${localStorage.getItem('authCognitoId')}&emailId=${JSON.parse(localStorage.getItem('authUser'))?.attributes?.email}`,
                                   })
-                                } else if (localStorage.getItem("authUserValidated") == "true") {
+                                }else if(localStorage.getItem("authUserValidated") == "true"){
                                   navigate('/dashboard')
                                 }
-                                else {
+                                else{
                                   navigate('/')
                                 }
                                 setLoginModal(false);
@@ -638,10 +665,10 @@ const Login = ({ setLoginModal }) => {
                                 email: email,
                               })
                                 .then((res) => {
-                                  console.log("emailotp : ", res);
-
+                                  console.log("emailotp : ",res);
+                                  
                                   cognitoCurrentUser().then((user) => {
-                                    console.log("user : ", user);
+                                    console.log("user : ",user);
                                     // setCognitoUser(user)
                                   });
                                 })
@@ -661,8 +688,8 @@ const Login = ({ setLoginModal }) => {
                   <button
                     className="otpButton button-primary"
                     onClick={() => {
-                      setRequestInProgress(true);
-                      cognitoAttributeVerify(cognitoUser, "email", otp)
+                       setRequestInProgress(true);
+                       cognitoAttributeVerify(cognitoUser, "email", otp)
                         .then((res) => {
                           cognitoCurrentUser().then(async (res) => {
                             await login(res);
@@ -682,10 +709,10 @@ const Login = ({ setLoginModal }) => {
                           });
                         })
                         .catch((error) => {
-                          console.log("error emailotp: ", error?.message);
-                          enqueueSnackbar(error, {
-                            variant: "error"
-                          })
+                          console.log("error emailotp: ",error?.message);
+                            enqueueSnackbar(error, {
+                              variant: "error"
+                            })
                           setRequestInProgress(false);
                           setError(error?.message !== "An account with the email already exists." && "Invalid OTP!");
                           setOtp("");

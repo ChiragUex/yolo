@@ -25,11 +25,11 @@ const Warning = () => {
       setItem('agentProfileDetails',JSON.stringify(response));
       setItem('agentProfileData', JSON.stringify(response?.profile));
       // console.log("testtttt : ",response?.agentLicense?.find(item => item.license_verification_status == "reject"));
-      if(response?.profile?.agent_verification_status == "pending" || response?.agentLicense?.find(item => item.license_verification_status == "pending")){
+      if(response?.profile?.agent_verification_status == "pending"){
         navigate('/warning/notapproved')
         return;
       }
-      else if(response?.agentLicense?.find(item => item.license_verification_status == "reject")){
+      else if(response?.agentLicense?.find(item => item.license_verification_status == "reject" || response?.agentLicense?.find(item => item.license_verification_status == "pending"))){
         navigate('/warning/rejected')
         return;
       }

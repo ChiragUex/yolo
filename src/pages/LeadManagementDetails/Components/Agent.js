@@ -17,6 +17,7 @@ const Agent = ({ leadDetails, agentProfile }) => {
   const [localData, setLocalData] = useState();
   const [customerDetails, setCustomerDetails] = useState();
 
+console.log("agentProfile agentProfile : ",agentProfile);
 
   const processData = (leadDetails, agentProfile) => {
     // console.log("919687348565 :", leadDetails, agentProfile);

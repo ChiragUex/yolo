@@ -77,12 +77,15 @@ const QuoteCards = ({ quote, setSelectedQuote, setSubmitQuoteFormModal, handleMa
                                             <p className="quoteHeadings">Document</p>
                                         </Grid>
                                         <Grid item md={12}>
-                                            <img
+                                            {
+                                                quote?.documents_loc[0] &&
+                                                <img
                                                 src={quote?.documents_loc ? quote?.documents_loc[0] : defaultProfile}
                                                 alt={"Quote Icon"}
                                                 width="60px"
                                                 height="60px"
                                             />
+                                            } 
                                         </Grid>
                                         {/* <Grid item md={12}>
                                             <Button className='nextBtn' fullWidth onClick={() => setPaymentLinkModal(true)} disabled={quote?.status == "accepted" ? false : true}>
