@@ -24,6 +24,8 @@ const SubmitQuoteForm = ({ sequenceId, userSequenceId, leadDetails, agentProfile
     const [quoteAcceptedId, setQuoteAcceptedId] = useState(0);
     const [quoteAccepted, setQuoteAccepted] = useState(leadDetails && leadDetails.quote_list?.find((quote) => quote?.status == "accepted"));
 
+    const [submitDisabled, setSubmitDisabled] = useState(true);
+
     const { Lead_sequenceId } = useParams();
     console.log("quoteAccepted quoteAccepted : ", agentProfileSequenceId);
 
@@ -32,7 +34,8 @@ const SubmitQuoteForm = ({ sequenceId, userSequenceId, leadDetails, agentProfile
     const { control, handleSubmit, errors, watch, getValues, setValue } = form;
 
     const handleSubmitQuoteForm = async (formData) => {
-
+        setSubmitDisabled(true)
+        
         // if (formData?.documents_loc instanceof File) {
 
         formData.documents_loc = formData?.documents_loc instanceof File ? [await Base64Converter(formData.documents_loc)] : [];
@@ -46,10 +49,10 @@ const SubmitQuoteForm = ({ sequenceId, userSequenceId, leadDetails, agentProfile
 
         if (formData?.insurance_carrier && formData?.term && formData?.term_measure && formData?.total_amount && formData?.validity && formData?.validity_measure) {
             const payload = submitaQuotePayloadTemplate(formData);
-            console.log("formData : ", payload);
+            console.log("formData submitQuoteApi : ", payload);
             submitQuoteApi(payload).then((response) => {
-                console.log("response : ", response);
-                if (response.sequence_id) {
+                console.log("response submitQuoteApi : ", response);
+                if (response) {
                     enqueueSnackbar(response?.message, {
                         variant: 'success'
                     })
@@ -68,6 +71,7 @@ const SubmitQuoteForm = ({ sequenceId, userSequenceId, leadDetails, agentProfile
     console.log("leadDetails quotes : ", leadDetails);
 
     const handleUpdateQuoteForm = async (formData) => {
+        setSubmitDisabled(true)
         // formData.documents_loc = Base64Converter(formData.documents_loc)
         // if (formData?.documents_loc instanceof File){
         //     formData.documents_loc = Base64Converter(formData.documents_loc);
@@ -123,12 +127,14 @@ const SubmitQuoteForm = ({ sequenceId, userSequenceId, leadDetails, agentProfile
             console.log("sendPaymentLinkPayloadTemplate  : ", payload);
             sendPaymentLinkApi(payload).then((response) => {
                 console.log("sendPaymentLinkPayloadTemplate response : ", response);
+                setPaymentLinkModal(false)
                 enqueueSnackbar(response?.message, {
                     variant: 'success'
                 })
             })
                 .catch((error) => {
                     console.log("error : ", error);
+                    setPaymentLinkModal(false)
                 })
         }
     }
@@ -251,6 +257,8 @@ const SubmitQuoteForm = ({ sequenceId, userSequenceId, leadDetails, agentProfile
                     </Grid>
                 </Grid> */}
             </Grid>
+            {
+                leadDetails?.quote_list?.length > 0 &&
             <Grid
                 container
                 direction="row"
@@ -270,7 +278,8 @@ const SubmitQuoteForm = ({ sequenceId, userSequenceId, leadDetails, agentProfile
                     </Button>
                 </Grid>
                 </Grid>
-            <ModalPopup open={submitQuoteFormModal} handleClose={handleClose} selectedQuote={selectedQuote} title={selectedQuote ? "Update Quote" : "Add Quote"} handleSubmitQuoteForm={handleSubmitQuoteForm} handleUpdateQuoteForm={handleUpdateQuoteForm} />
+                }
+            <ModalPopup open={submitQuoteFormModal} handleClose={handleClose} selectedQuote={selectedQuote} title={selectedQuote ? "Update Quote" : "Add Quote"} handleSubmitQuoteForm={handleSubmitQuoteForm} handleUpdateQuoteForm={handleUpdateQuoteForm} setSubmitDisabled={setSubmitDisabled} submitDisabled={submitDisabled}/>
             <ModalPopup open={paymentLinkModal} handleClose={() => setPaymentLinkModal(false)} selectedQuote={selectedQuote} title={"Send Payment Link"} handlePaymentLink={handlePaymentLink} />
         </>
     )

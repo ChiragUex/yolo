@@ -103,23 +103,23 @@ export const Header = ({ isLayout, isPrivate, isView }) => {
      agentProfileDetails = JSON.parse(localStorage.getItem('agentProfileDetails'));
     const payload = getAgentProfileDetailsPayloadTemplate();
     getAgentProfileApi(payload).then((response) => {
-      console.log("getAgentProfileDetailsPayloadTemplate response : ", response);
+      // console.log("getAgentProfileDetailsPayloadTemplate response : ", response);
       setItem('agentProfileDetails',JSON.stringify(response));
       setItem('agentProfileData', JSON.stringify(response?.profile));
-      setProfileData(response?.profile)
-      if(response?.profile?.agent_verification_status == "pending" || response?.agentLicense?.find(item => item.license_verification_status == "pending")){
-        navigate('/warning/notapproved')
+      setProfileData(response?.profile);
+      if(response?.profile?.agent_verification_status == "pending"){
+        navigate('/warning/notapproved');
         return;
       }
-      else if(response?.agentLicense?.find(item => item.license_verification_status == "reject")){
-        navigate('/warning/rejected')
+      else if(response?.agentLicense?.find(item => item.license_verification_status == "reject" || response?.agentLicense?.find(item => item.license_verification_status == "pending"))){
+        navigate('/warning/rejected');
         return;
       }
     })
       .catch((error) => {
         console.log("error : ", error);
       })
-      console.log("test useeffct :",JSON.parse(localStorage.getItem("agentProfileData")),JSON.parse(localStorage.getItem("agentProfileDetails"))?.profile);
+      // console.log("test useeffct :",JSON.parse(localStorage.getItem("agentProfileData")),JSON.parse(localStorage.getItem("agentProfileDetails"))?.profile);
   }, []);
 
   // console.log("localStorage.getItem agent profile : ", JSON.parse(localStorage.getItem("agentProfileData")))
@@ -136,10 +136,11 @@ export const Header = ({ isLayout, isPrivate, isView }) => {
   },[JSON.parse(localStorage.getItem("agentProfileDetails")),JSON.parse(localStorage.getItem("agentProfileData"))])
 
 
-  console.log("test useeffct out : ",JSON.parse(localStorage.getItem("agentProfileData")),JSON.parse(localStorage.getItem("agentProfileDetails"))?.profile);
+  // console.log("test useeffct out : ",JSON.parse(localStorage.getItem("agentProfileData")),JSON.parse(localStorage.getItem("agentProfileDetails"))?.profile);
 
   const rejected = agentProfileDetails?.agentLicense?.find(item => item.license_verification_status == "reject");
 
+  console.log("getting values : ", JSON.parse(localStorage.getItem("agentProfileData"))?.profile_picture?.length ? JSON.parse(localStorage.getItem("agentProfileData"))?.profile_picture :  JSON.parse(localStorage.getItem("agentProfileDetails"))?.profile?.profile_picture?.length ? JSON.parse(localStorage.getItem("agentProfileDetails"))?.profile?.profile_picture : JSON.parse(localStorage.getItem("agentProfileData"))?.first_name);
 
   return (
     <>
@@ -180,8 +181,8 @@ export const Header = ({ isLayout, isPrivate, isView }) => {
               <>
               <li>
               <NavLink
-                to="/dashboard/"
-                className={location?.pathname == '/dashboard/' ? "d-flex align-items-center gap-10 activeNavLink" : "d-flex align-items-center gap-10 inactiveNavLink"}
+                to="/dashboard"
+                className={location?.pathname == '/dashboard' ? "d-flex align-items-center gap-10 activeNavLink" : "d-flex align-items-center gap-10 inactiveNavLink"}
               >
                 <div>Dashboard</div>
               </NavLink>
@@ -295,17 +296,17 @@ export const Header = ({ isLayout, isPrivate, isView }) => {
                   <div className="headProfileDiv">
                     <div className="user-logo" >
                       {
-                        agentData?.profile_picture || JSON.parse(localStorage.getItem("agentProfileData")) || JSON.parse(localStorage.getItem("agentProfileDetails"))?.profile ?
+                        agentData?.profile_picture?.length || JSON.parse(localStorage.getItem("agentProfileData"))?.profile_picture?.length || JSON.parse(localStorage.getItem("agentProfileDetails"))?.profile?.profile_picture?.length ?
                           <img
                             width="50px"
                             height="50px"
                             className="userImg"
-                            alt="Angular Logo"
-                            src={JSON.parse(localStorage.getItem("agentProfileData")) ? JSON.parse(localStorage.getItem("agentProfileData"))?.profile_picture :  JSON.parse(localStorage.getItem("agentProfileDetails"))?.profile ? JSON.parse(localStorage.getItem("agentProfileDetails"))?.profile?.profile_picture : agentData?.first_name && agentData?.first_name[0]}
+                            alt="profile picture"
+                            src={JSON.parse(localStorage.getItem("agentProfileData"))?.profile_picture?.length ? JSON.parse(localStorage.getItem("agentProfileData"))?.profile_picture :  JSON.parse(localStorage.getItem("agentProfileDetails"))?.profile?.profile_picture?.length ? JSON.parse(localStorage.getItem("agentProfileDetails"))?.profile?.profile_picture : ""}
                           />
                           :
                           <>
-                            <p className="userProfileName">{JSON.parse(localStorage.getItem("agentProfileData")) ? JSON.parse(localStorage.getItem("agentProfileData"))?.first_name[0] : JSON.parse(localStorage.getItem("agentProfileDetails"))?.profile?.first_name ? JSON.parse(localStorage.getItem("agentProfileDetails"))?.profile?.first_name[0] : agentData?.first_name && agentData?.first_name[0]}</p>
+                            <p className="userProfileName">{JSON.parse(localStorage.getItem("agentProfileData"))?.first_name?.length ? JSON.parse(localStorage.getItem("agentProfileData"))?.first_name[0] : JSON.parse(localStorage.getItem("agentProfileDetails"))?.profile?.first_name?.length ? JSON.parse(localStorage.getItem("agentProfileDetails"))?.profile?.first_name[0] : JSON.parse(localStorage.getItem("agentProfileData"))?.first_name[0]}</p>
                           </>
                       }
                     </div>

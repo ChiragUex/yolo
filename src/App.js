@@ -30,7 +30,7 @@ const App = () => {
   }, []);
 
   return (
-    <Router>
+    <Router basename="/">
       <AuthContext.Provider value={{ authUser, setAuthUser }}>
         <LoaderContext.Provider value={{ isLoader, setIsLoader }}>
           <SnackbarProvider

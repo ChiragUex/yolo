@@ -7,6 +7,8 @@ import { useState } from "react";
 const LeadDetailsAccordion = ({title, children, accordionIndex, expanded, status, editIcon, handleEditIconClick, expandUpdateDetailsAccordion, handleSaveIconClick}) => {
   
   const [triggered,setTriggered] = useState(expanded || false);
+
+  
   
     return (
         <>

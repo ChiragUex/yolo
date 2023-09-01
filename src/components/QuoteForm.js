@@ -12,12 +12,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 const QuoteForm = (props) => {
 
-    const { handleSubmitQuoteForm, edit, handleUpdateQuoteForm, selectedQuote, handleMarkLeadAsPurchased, handlePaymentLink, quoteAccepted } = props;
+    const { handleSubmitQuoteForm, edit, handleUpdateQuoteForm, selectedQuote, handleMarkLeadAsPurchased, handlePaymentLink, quoteAccepted, submitDisabled, setSubmitDisabled } = props;
 
     console.log("selectedQuote : ", selectedQuote?.documents_loc);
 
     const [paymentLinkModal, setPaymentLinkModal] = useState(false);
-    const [submitDisabled, setSubmitDisabled] = useState(true);
 
 
     const form = useForm({
@@ -59,7 +58,7 @@ const QuoteForm = (props) => {
 
     }, [watch('insurance_carrier'), watch('term'), watch('term_measure'), watch('validity'), watch('total_amount'), watch('validity_measure'), selectedQuote, edit])
 
-console.log("total_amount : ",watch("total_amount"));
+    console.log("total_amount : ", watch("total_amount"));
 
     return (
         <>
@@ -111,7 +110,7 @@ console.log("total_amount : ",watch("total_amount"));
                                     <InputLabel className="labelBg">Number</InputLabel>
                                     <Select
                                         {...field}
-                                        
+
                                     >
                                         <MenuItem value={"1"} >1</MenuItem>
                                         <MenuItem value={"2"} >2</MenuItem>
@@ -217,35 +216,35 @@ console.log("total_amount : ",watch("total_amount"));
                             )}
                         /> */}
 
-<Controller
-    control={control}
-    name="total_amount"
-    render={({ field }) => (
-        <TextField
-            {...field}
-            fullWidth
-            placeholder="Total amount"
-            variant="outlined"
-            InputProps={{
-                inputProps: {
-                    min: 0,
-                },
-            }}
-            onChange={(e) => {
-                const inputValue = e.target.value;
-                const validValue = inputValue.replace(/[^0-9.]/g, '');
-                const parts = validValue.split('.');
-                if (parts.length > 2) {
-                    const integerPart = parts[0];
-                    const decimalPart = parts[1];
-                    field.onChange(`${integerPart}.${decimalPart}`);
-                } else {
-                    field.onChange(validValue);
-                }
-            }}
-        />
-    )}
-/>
+                        <Controller
+                            control={control}
+                            name="total_amount"
+                            render={({ field }) => (
+                                <TextField
+                                    {...field}
+                                    fullWidth
+                                    placeholder="Total amount"
+                                    variant="outlined"
+                                    InputProps={{
+                                        inputProps: {
+                                            min: 0,
+                                        },
+                                    }}
+                                    onChange={(e) => {
+                                        const inputValue = e.target.value;
+                                        const validValue = inputValue.replace(/[^0-9.]/g, '');
+                                        const parts = validValue.split('.');
+                                        if (parts.length > 2) {
+                                            const integerPart = parts[0];
+                                            const decimalPart = parts[1];
+                                            field.onChange(`${integerPart}.${decimalPart}`);
+                                        } else {
+                                            field.onChange(validValue);
+                                        }
+                                    }}
+                                />
+                            )}
+                        />
 
                     </Grid>
 

@@ -56,7 +56,7 @@ const LeadManagement = () => {
     useEffect(() => {
         const agentProfileDetails = JSON.parse(localStorage.getItem('agentProfileDetails'));
     
-        const rejected = agentProfileDetails?.agentLicense?.find(item => item.license_verification_status == "reject")
+        const rejected = agentProfileDetails?.agentLicense?.find(item => item.license_verification_status == "reject") || agentProfileDetails?.agentLicense?.find(item => item.license_verification_status == "pending")
     
         if(rejected){
           navigate('/warning/rejected')

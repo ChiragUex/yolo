@@ -7,7 +7,7 @@ import QuoteForm from "./QuoteForm";
 
 const ModalPopup = (props) => {
 
-    const { open, handleClose, selectedQuote, title, handleUpdateQuoteForm, setLeadQuoteSequenceId, handlePaymentLink, handleSubmitQuoteForm } = props;
+    const { open, handleClose, selectedQuote, title, handleUpdateQuoteForm, setLeadQuoteSequenceId, handlePaymentLink, handleSubmitQuoteForm, setSubmitDisabled, submitDisabled } = props;
 
 
     const { control, handleSubmit, errors, watch, getValues, setValue } = useForm();
@@ -55,7 +55,7 @@ const ModalPopup = (props) => {
                         </form>
                         </>
                          :
-                        <QuoteForm selectedQuote={selectedQuote} handleUpdateQuoteForm={handleUpdateQuoteForm} handleSubmitQuoteForm={handleSubmitQuoteForm}/>
+                        <QuoteForm selectedQuote={selectedQuote} handleUpdateQuoteForm={handleUpdateQuoteForm} handleSubmitQuoteForm={handleSubmitQuoteForm} setSubmitDisabled={setSubmitDisabled} submitDisabled={submitDisabled}/>
                     }
                 </DialogContent>
             </Dialog>

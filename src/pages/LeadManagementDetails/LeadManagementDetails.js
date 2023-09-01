@@ -37,17 +37,17 @@ const LeadManagementDetails = () => {
             console.log("error : ", error);
         })
 
-        // const payload = getAgentProfileDetailsPayloadTemplate();
-        // getAgentProfileApi(payload).then((response) => {
-        //     console.log("getAgentProfileDetailsPayloadTemplate response : ", response);
-        //     setAgentProfile(response?.profile)
-        //     // enqueueSnackbar(response?.message, {
-        //     //     variant: 'success'
-        //     // })
-        // })
-        //     .catch((error) => {
-        //         console.log("error : ", error);
-        //     })
+        const payload = getAgentProfileDetailsPayloadTemplate();
+        getAgentProfileApi(payload).then((response) => {
+            console.log("getAgentProfileDetailsPayloadTemplate response : ", response);
+            setAgentProfile(response?.profile)
+            // enqueueSnackbar(response?.message, {
+            //     variant: 'success'
+            // })
+        })
+            .catch((error) => {
+                console.log("error : ", error);
+            })
             console.log("workinh : ",refetchQuotes,leadDetails);
             setRefetchQuotes(false)
     }, [refetchQuotes])
@@ -76,6 +76,8 @@ const LeadManagementDetails = () => {
             })
     }
 
+
+    console.log("localStorage.getItem('authCognitoId') : ",localStorage.getItem('authCognitoId'));
 
     return (
         <>
